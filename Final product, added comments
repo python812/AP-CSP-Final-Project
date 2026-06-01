@@ -1,0 +1,127 @@
+#Clothes picking app based on the weather
+clothesLabel=[Label('Pick which temperature applies to you',200,50,size=20)]
+weatherLabel=Label('Pick the weather type here',200,160,size=20)
+tempLabel=Line(100,100,300,100)
+tempCirc=Circle(200,100,10,fill='red')
+temperature=Label(50,200,120,size=20)
+tempCirc.isMovable=False
+checkBox=Group(Rect(20,80,40,40,fill='limeGreen'),Label('X',40,100,size=30))
+descLabel=Label('Lock and reset',40,70)
+app.canChangeWeather=True
+finalLabel=Label('Clothes Options Here',200,340,size=20)
+weatherList=[]
+app.selectedWeather=None
+clothesChoice=Label('',200,300,size=20)
+
+
+
+def drawLabel(X,Y,labelVal):
+    #Used to determine different types of weather
+    #stores types in a list
+    button=Group(
+        Rect(X-40,Y-15,75,30,fill='orange'),
+        Label(labelVal,X,Y,size=20))
+    button.name=labelVal
+    weatherList.append(button)`
+#Makes the types of weather labels    
+drawLabel(65,200,'rainy')    
+drawLabel(200,200,'snowy')
+drawLabel(335,200,'sunny')
+
+def updateTemperature(mouseX):
+    #Updates visual temperature value 
+    #based on position of X when hit by the mouse
+    if 100<=mouseX<=300:
+        tempCirc.centerX=mouseX
+    elif mouseX<100:
+        tempCirc.centerX=100
+    elif mouseX>300:
+        tempCirc.centerX=300
+    temperature.value=int((tempCirc.centerX-100)/2)
+
+
+def onMousePress(mouseX,mouseY):
+    #Handles logic for when lock button and weather type buttons are hit
+    if checkBox.hits(mouseX,mouseY)==True:
+        #Stops moving temperature slider if check box is green
+        if checkBox.children[0].fill=='limeGreen':
+            checkBox.children[0].fill='red'
+            tempCirc.isMovable=False
+            chooseWeather()
+    
+        else:
+            #Resets app UI otherwise
+            resetWeather()  
+        chooseWeather()    
+    if tempCirc.hits(mouseX,mouseY)==True and not checkBox.children[0].fill=='red':
+        tempCirc.isMovable=True    
+    if app.canChangeWeather==True: 
+        #Iterates through the weather buttons and makes the selected one red
+        for button in weatherList:
+            if button.hits(mouseX,mouseY)==True:
+                for b in weatherList:
+                    b.children[0].fill='orange'
+                button.children[0].fill='red'
+                chooseWeather()
+            
+            
+    
+
+def onMouseDrag(mouseX,mouseY):
+    #Allows for smooth dragging of temperature slider
+    if tempCirc.isMovable==True:
+        tempCirc.centerX=mouseX
+        updateTemperature(mouseX)
+        chooseWeather()
+        
+        
+def chooseWeather():
+    for button in weatherList:
+    #Loops through list of weather buttons (Iteration)    
+        if button.children[0].fill=='red':
+            #Checks what the value of the selected button is and chooses which label to express
+            app.selectedWeather=button.children[1].value
+    #Sequencing and selection shown by checking weather buttons before choosing the weather.
+    if app.selectedWeather=='snowy':
+    #Nested selection with this section of the code    
+        if temperature.value>32:
+            #Check for snow if it is above freezing
+            clothesChoice.value='too hot for snow, wear a jacket'
+        elif temperature.value<10:    
+            clothesChoice.value='Wear a parka'   
+        elif temperature.value<32:
+            clothesChoice.value='Wear a snow jacket'
+    elif app.selectedWeather=='rainy':
+        #Check for if rain value is below freezing
+        if temperature.value<32:
+            clothesChoice.value='Wear a snow jacket'
+        elif temperature.value<=70:
+            clothesChoice.value='wear a rain jacket'
+        else: clothesChoice.value='wear something light and waterproof'    
+    elif app.selectedWeather=='sunny':
+        if temperature.value<32:
+            clothesChoice.value='Wear a heavy jacket'
+        elif temperature.value<50:
+            clothesChoice.value='Wear a hoodie'
+        elif temperature.value<70:
+            clothesChoice.value='Wear a long sleeved shirt'
+        else: clothesChoice.value='Wear a shirt and shorts'   
+   
+        
+def resetWeather():
+    #Resets app UI
+    app.selectedWeather=None
+    tempCirc.centerX=200
+    temperature.value=50
+    checkBox.children[0].fill='limeGreen'
+    clothesChoice.value=''
+    for button in weatherList:
+        button.children[0].fill='orange'
+    
+
+            
+    
+        
+
+ 
+    
