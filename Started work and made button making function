@@ -1,0 +1,13 @@
+clothesLabel=[Label('Pick which weather options apply to you',200,50,size=20)]
+tempLabel=Group(Line(100,100,300,100),Circle(200,100,10,fill='red'))
+weatherList=[]
+
+
+def drawLabel(X,Y,labelVal):
+    Rect(X-40,Y-15,75,30,fill='orange')
+    Label(labelVal,X,Y,size=20)
+    weatherList.append(labelVal)
+    
+drawLabel(65,200,'rainy')    
+drawLabel(200,200,'snowy')
+drawLabel(200,300,'sunny')
