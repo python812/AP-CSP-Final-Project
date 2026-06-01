@@ -1,0 +1,39 @@
+clothesLabel=[Label('Pick which weather options apply to you',200,50,size=20)]
+tempLabel=Line(100,100,300,100)
+tempCirc=Circle(200,100,10,fill='red')
+temperature=Label(50,200,120,size=20)
+tempCirc.isMovable=False
+checkBox=Group(Rect(20,80,40,40,fill='limeGreen'),Label('X',40,100,size=30))
+weatherList=[]
+
+
+
+def drawLabel(X,Y,labelVal):
+    button=Group(
+        Rect(X-40,Y-15,75,30,fill='orange'),
+        Label(labelVal,X,Y,size=20))
+    weatherList.append(button)
+    
+drawLabel(65,200,'rainy')    
+drawLabel(200,200,'snowy')
+drawLabel(335,200,'sunny')
+
+
+def onMousePress(mouseX,mouseY):
+    if tempCirc.hits(mouseX,mouseY)==True and not checkBox.children[0].fill=='red':
+        tempCirc.isMovable=True
+    if checkBox.hits(mouseX,mouseY)==True:
+        checkBox.children[0].fill='red'
+        tempCirc.isMovable=False
+    
+
+def onMouseDrag(mouseX,mouseY):
+    if tempCirc.isMovable==True and 100<mouseX<300:
+        tempCirc.centerX=mouseX
+        changeValues()
+        
+        
+def changeValues():
+    temperature.value=int((tempCirc.centerX-100)/2)
+ 
+    
